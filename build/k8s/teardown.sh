@@ -11,6 +11,8 @@ die () { echo "$1" >&2; exit 1; }
 source $(dirname "$0")/../variables.sh
 
 ktmpl build/k8s/ktmpl.yml \
-  -f build/k8s/params/default.yml \
+  -p APP_NAME $APP_NAME \
+  -p NAMESPACE $NAMESPACE \
+  -p REPLICA_COUNT $REPLICA_COUNT \
   -f "build/k8s/params/$ENVIRONMENT.yml" \
   | kubectl delete -f -
