@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  base: &base
+    build:
+      context: .
+    working_dir: /opt/code
+    volumes:
+      - ../:/opt/code
+      - $HOME/.aws:/root/.aws
+    environment:
+      AWS_DEFAULT_REGION: ap-southeast-2
+
+  deploy:
+    <<: *base
+    command: bash -c -e "aws cloudformation deploy
+      --stack-name $AppName
+      --template-file build/aws/cfn.yaml
+      --capabilities CAPABILITY_NAMED_IAM
+      --no-fail-on-empty-changeset
+      --parameter-overrides
+      Environment=$ENVIRONMENT"

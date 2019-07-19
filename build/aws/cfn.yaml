@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploys aws resources for graphql-lab
+
+Parameters:
+  Environment:
+    Description: AWS Account
+    Type: String
+    AllowedValues:
+      - preprod
+      - prod
+
+Mappings:
+  EuropaCluster:
+    preprod:
+      AccountId: 967276157215
+    prod:
+      AccountId: 428235295317
+
+Resources:
+  EcrRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref AWS::StackName
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "action": { "type": "expire" },
+                "description": "Keep only the 20 latest images",
+                "rulePriority": 1,
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 10
+                }
+              }
+            ]
+          }
+      RepositoryPolicyText:
+        Version: '2008-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ':'
+                  - - 'arn:aws:iam:'
+                    - !FindInMap [EuropaCluster, !Ref Environment, AccountId]
+                    - 'root'
+            Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:BatchGetImage
+              - ecr:GetDownloadUrlForLayer

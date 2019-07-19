@@ -1,0 +1,8 @@
+apiVersion: myob.com/v1alpha1
+kind: PostgresDB
+metadata:
+  name: graphql-lab-db
+  namespace: training
+spec:
+  size: "db.t2.small"
+  storage: "10"
