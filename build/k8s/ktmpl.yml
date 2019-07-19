@@ -1,0 +1,84 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: graphql-lab
+  annotations:
+    description: Database and application server
+labels:
+  template: graphql-lab-template
+objects:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata: &metadata
+      name: "$(APP_NAME)"
+      namespace: $(NAMESPACE)
+      labels: &labels
+        app: "$(APP_NAME)"
+        purpose: learning-lab
+    spec:
+      replicas: $((REPLICA_COUNT))
+      selector:
+        matchLabels: *labels
+      template:
+        metadata:
+          labels: *labels
+        spec:
+          containers:
+            - name: graphql-js
+              image: $(IMAGE_URI)
+              ports:
+                - containerPort: 4000
+              envFrom:
+                - secretRef:
+                    name: graphql-lab-db-admin
+  - apiVersion: v1
+    kind: Service
+    metadata: *metadata
+    spec:
+      selector: *labels
+      ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 4000
+  - apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      name: "$(APP_NAME)"
+      namespace: $(NAMESPACE)
+      labels:
+        app: "$(APP_NAME)"
+        purpose: learning-lab
+      annotations:
+        "kubernetes.io/tls-acme": "true"
+    spec:
+      rules:
+        - host: "$(APP_NAME).training.svc.platform.myobdev.com"
+          http:
+            paths:
+              - backend:
+                  serviceName: "$(APP_NAME)"
+                  servicePort: 80
+                path: /
+      tls:
+        - hosts:
+            - "$(APP_NAME).training.svc.platform.myobdev.com"
+          secretName: "$(APP_NAME)-tls"
+
+parameters:
+  - name: "NAMESPACE"
+    description: "Kubernetes cluster namespace"
+    required: true
+    parameterType: "string"
+  - name: "APP_NAME"
+    description: "Name of the application"
+    required: true
+    parameterType: "string"
+  - name: "IMAGE_URI"
+    description: "Docker image URI"
+    required: true
+    parameterType: "string"
+  - name: "REPLICA_COUNT"
+    description: "Number of replicas for graphql-js server"
+    required: true
+    parameterType: "int"
