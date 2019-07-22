@@ -15,7 +15,7 @@ ktmpl build/k8s/db.yml \
   | kubectl apply -f -
 
 ITER_COUNT=0
-ITER_MAX=40
+ITER_MAX=60
 
 while [ $ITER_COUNT -lt $ITER_MAX ]
 do
@@ -23,7 +23,7 @@ do
 		break
 	fi
 	(( ITER_COUNT++ ))
-	sleep 60
+	sleep 30
 done
 
 if [ $ITER_COUNT -eq $ITER_MAX ]; then

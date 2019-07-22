@@ -8,9 +8,9 @@ hash kubectl || ( echo "kubectl is missing, install with `brew install kubectl`.
 # Check that required variables are set.
 source build/variables.sh
 
-ktmpl build/k8s/server.yml \
+ktmpl build/k8s/db.yml \
   -p APP_NAME $APP_NAME \
   -p NAMESPACE $NAMESPACE \
-  -p REPLICA_COUNT $REPLICA_COUNT \
-  -p IMAGE_URI $IMAGE_URI \
   | kubectl delete -f -
+
+kubectl delete secret "$APP_NAME-admin" -n $NAMESPACE

@@ -9,8 +9,10 @@ die () { echo "$1" >&2; exit 1; }
 # Check that required variables are set.
 source build/variables.sh
 
-# Confirm account to push container image.
-source build/account.sh
+# Confirm current account id.
+if [[ $(aws sts get-caller-identity | jq -r ".Account") != "$ACCOUNT_ID" ]]; then
+  die "Your logged in aws account id doesn't match with $ENVIRONMENT account id."
+fi
 
 # Deploy aws stack.
 echo "Deploy AWS"

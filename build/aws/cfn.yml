@@ -27,12 +27,12 @@ Resources:
             "rules": [
               {
                 "action": { "type": "expire" },
-                "description": "Keep only the 3 latest images",
+                "description": "Keep only the 10 latest images",
                 "rulePriority": 1,
                 "selection": {
                   "tagStatus": "any",
                   "countType": "imageCountMoreThan",
-                  "countNumber": 3
+                  "countNumber": 10
                 }
               }
             ]
