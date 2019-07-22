@@ -28,10 +28,20 @@ objects:
             - name: graphql-js
               image: $(IMAGE_URI)
               ports:
-                - containerPort: 4000
+                - containerPort: $((HTTP_PORT))
               envFrom:
                 - secretRef:
                     name: graphql-lab-db-admin
+              readinessProbe:
+                httpGet: &httpStatusCheck
+                  path: /
+                  port: $((HTTP_PORT))
+                initialDelaySeconds: 10
+                periodSeconds: 5
+              livenessProbe:
+                httpGet: *httpStatusCheck
+                initialDelaySeconds: 10
+                periodSeconds: 60
   - apiVersion: v1
     kind: Service
     metadata: *metadata
@@ -39,8 +49,7 @@ objects:
       selector: *labels
       ports:
         - protocol: TCP
-          port: 80
-          targetPort: 4000
+          port: $((HTTP_PORT))
   - apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:
@@ -58,7 +67,7 @@ objects:
             paths:
               - backend:
                   serviceName: "$(APP_NAME)"
-                  servicePort: 80
+                  servicePort: $((HTTP_PORT))
                 path: /
       tls:
         - hosts:
@@ -80,5 +89,10 @@ parameters:
     parameterType: "string"
   - name: "REPLICA_COUNT"
     description: "Number of replicas for graphql-js server"
+    required: true
+    parameterType: "int"
+  - name: "HTTP_PORT"
+    description: "Port in the container serving http requests"
+    value: 4000
     required: true
     parameterType: "int"
