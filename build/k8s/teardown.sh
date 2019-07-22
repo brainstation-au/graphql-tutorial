@@ -8,7 +8,7 @@ hash kubectl || ( echo "kubectl is missing, install with `brew install kubectl`.
 die () { echo "$1" >&2; exit 1; }
 
 # Check that required variables are set.
-source $(dirname "$0")/../variables.sh
+source build/variables.sh
 
 ktmpl build/k8s/ktmpl.yml \
   -p APP_NAME $APP_NAME \

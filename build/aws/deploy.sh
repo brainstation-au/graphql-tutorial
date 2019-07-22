@@ -7,7 +7,8 @@ hash aws || ( echo "AWS cli is missing, install with `brew install awscli`." >&2
 die () { echo "$1" >&2; exit 1; }
 
 # Check that required variables are set.
-source $(dirname "$0")/../variables.sh
+source build/variables.sh
+source build/account.sh
 
 # Deploy aws stack.
 echo "Deploy AWS"
@@ -16,14 +17,12 @@ if ! docker-compose -f build/aws/docker-compose.yml run --rm deploy; then
   die "Failed to deploy AWS resources in $ENVIRONMENT"
 fi
 
-# Create and upload docker container for ECR.
-RepositoryUri=$(aws ecr describe-repositories --repository-names $APP_NAME | jq -r ".repositories[0].repositoryUri")
-
-if [[ $RepositoryUri == "" ]]; then
-  die "Couldn't find repository '$APP_NAME'."
+# Confirm repository availablity.
+if aws ecr describe-repositories --repository-names $APP_NAME; then
+  echo "$REPO_URI exists."
+else
+  exit 1
 fi
-
-export IMAGE_URI="$RepositoryUri:latest"
 
 # Build the application image and upload to ECR.
 docker-compose -f docker-build.yml build server

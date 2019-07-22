@@ -8,13 +8,11 @@ hash kubectl || ( echo "kubectl is missing, install with `brew install kubectl`.
 die () { echo "$1" >&2; exit 1; }
 
 # Check that required variables are set.
-source $(dirname "$0")/../variables.sh
+source build/variables.sh
 
 ktmpl build/k8s/ktmpl.yml \
   -p APP_NAME $APP_NAME \
   -p NAMESPACE $NAMESPACE \
   -p REPLICA_COUNT $REPLICA_COUNT \
-  -f "build/k8s/params/$ENVIRONMENT.yml" \
-  | kubectl apply -f - \
-  | while read line; do if [[ $line == *"deployment"* && $line == *"unchanged"* ]]; then echo $line | awk '{print $1}'; fi; done \
-  | while read line; do kubectl rollout restart $line -n $NAMESPACE; done
+  -p IMAGE_URI $IMAGE_URI \
+  | kubectl apply -f -
