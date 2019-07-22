@@ -8,6 +8,8 @@ die () { echo "$1" >&2; exit 1; }
 
 # Check that required variables are set.
 source build/variables.sh
+
+# Confirm account to push container image.
 source build/account.sh
 
 # Deploy aws stack.

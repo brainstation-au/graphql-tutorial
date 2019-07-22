@@ -1,8 +1,31 @@
-apiVersion: myob.com/v1alpha1
-kind: PostgresDB
+---
+kind: Template
+apiVersion: v1
 metadata:
   name: graphql-lab
-  namespace: training
-spec:
-  size: "db.t2.small"
-  storage: "10"
+  annotations:
+    description: Database and application server
+labels:
+  template: graphql-lab-template
+objects:
+  - apiVersion: myob.com/v1alpha1
+    kind: PostgresDB
+    metadata:
+      name: "$(APP_NAME)"
+      namespace: $(NAMESPACE)
+      labels:
+        app: "$(APP_NAME)"
+        purpose: learning-lab
+    spec:
+      size: "db.t2.small"
+      storage: "10"
+
+parameters:
+  - name: "NAMESPACE"
+    description: "Kubernetes cluster namespace"
+    required: true
+    parameterType: "string"
+  - name: "APP_NAME"
+    description: "Name of the application"
+    required: true
+    parameterType: "string"
