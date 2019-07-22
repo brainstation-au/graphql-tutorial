@@ -19,11 +19,11 @@ ITER_MAX=40
 
 while [ $ITER_COUNT -lt $ITER_MAX ]
 do
-	if kubectl get secret "$APP_NAME-admin" -n $NAMESPACE && kubectl get secret "$APP_NAME-tls" -n $NAMESPACE; then
+	if kubectl get secret "$APP_NAME-admin" -n $NAMESPACE; then
 		break
 	fi
 	(( ITER_COUNT++ ))
-	sleep 30
+	sleep 60
 done
 
 if [ $ITER_COUNT -eq $ITER_MAX ]; then
