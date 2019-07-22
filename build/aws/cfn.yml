@@ -27,12 +27,22 @@ Resources:
             "rules": [
               {
                 "action": { "type": "expire" },
-                "description": "Keep only the 10 latest images",
-                "rulePriority": 1,
+                "description": "Keep only 10 latest images",
+                "rulePriority": 2,
                 "selection": {
                   "tagStatus": "any",
                   "countType": "imageCountMoreThan",
                   "countNumber": 10
+                }
+              },
+              {
+                "action": { "type": "expire" },
+                "description": "Expire untagged images",
+                "rulePriority": 1,
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 1
                 }
               }
             ]

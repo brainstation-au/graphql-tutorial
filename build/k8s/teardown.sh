@@ -14,3 +14,5 @@ ktmpl build/k8s/server.yml \
   -p REPLICA_COUNT $REPLICA_COUNT \
   -p IMAGE_URI $IMAGE_URI \
   | kubectl delete -f -
+
+kubectl delete secret "$APP_NAME-tls" -n $NAMESPACE
