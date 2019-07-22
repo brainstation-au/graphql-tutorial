@@ -14,5 +14,5 @@ ktmpl build/k8s/ktmpl.yml \
   -p APP_NAME $APP_NAME \
   -p NAMESPACE $NAMESPACE \
   -p REPLICA_COUNT $REPLICA_COUNT \
-  -f "build/k8s/params/$ENVIRONMENT.yml" \
+  -p IMAGE_URI $IMAGE_URI \
   | kubectl delete -f -

@@ -31,7 +31,7 @@ objects:
                 - containerPort: $((HTTP_PORT))
               envFrom:
                 - secretRef:
-                    name: graphql-lab-db-admin
+                    name: $(APP_NAME)-admin
               readinessProbe:
                 httpGet: &httpStatusCheck
                   path: /
