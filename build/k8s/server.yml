@@ -42,6 +42,8 @@ objects:
                 httpGet: *httpStatusCheck
                 initialDelaySeconds: 10
                 periodSeconds: 60
+      strategy:
+        type: RollingUpdate
   - apiVersion: v1
     kind: Service
     metadata: *metadata
