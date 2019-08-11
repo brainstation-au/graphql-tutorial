@@ -1,6 +1,12 @@
-.vscode
+.*
 bin
 build
 coverage
-node_modules
-dist
+src
+Dockerfile
+README.md
+docker-*
+jest*
+package-lock.json
+tsconfig*
+tslint.json

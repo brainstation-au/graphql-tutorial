@@ -1,4 +1,8 @@
 version: "3"
 services:
-  server:
-    build: .
+  app:
+    image: node:10.15-alpine
+    volumes:
+      - .:/opt/code
+    working_dir: /opt/code
+    command: sh -c "npm install && npm run build"

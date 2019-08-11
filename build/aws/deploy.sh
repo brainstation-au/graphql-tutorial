@@ -29,7 +29,7 @@ else
 fi
 
 # Build the application image and upload to ECR.
-docker-compose -f docker-build.yml build server
-docker tag graphql-tutorial_server:latest $IMAGE_URI
+docker-compose -f docker-build.yml build app
+docker build --tag $IMAGE_URI .
 $(aws ecr get-login --no-include-email --region ap-southeast-2)
 docker push $IMAGE_URI || { die "Failed to build and push application image"; }
