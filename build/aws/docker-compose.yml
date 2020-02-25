@@ -1,8 +1,7 @@
 version: '3.4'
 services:
   base: &base
-    build:
-      context: .
+    image: brainstation/awscli:1
     working_dir: /opt/code
     volumes:
       - ../:/opt/code
